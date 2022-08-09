@@ -1,4 +1,81 @@
-.App {
-  text-align: center;
-}
+body {
+	background-color: #333;
+	color: #eee;
+	font-family: sans-serif;
+	padding: 1rem;
+	font-size: 1.5rem;
 
+	h1 {
+		font-size: 2.6rem;
+		color: #aaa;
+	}
+
+	h2 {
+		background-color: #222;
+		padding: .2rem .5rem;
+		max-width: 28rem;
+		border-radius: .5rem;
+	}
+
+	.countArea {
+		margin-top: 1rem;
+		margin-bottom: 2rem;
+		display: flex;
+
+		button {
+			font-size: 2rem;
+			margin-right: .5rem;
+			width: 4rem;
+		}
+
+		.count {
+			font-size: 2.7rem;
+			margin-left: .8rem;
+			color: orange;
+		}
+	}
+
+	.germanNounArea {
+
+		fieldset.germanNoun {
+			background-color: #444;
+			margin-bottom: 1rem;
+			padding: 1rem;
+			border: 1px solid #666;
+			color: rgb(226, 226, 144);
+			max-width: 38rem;
+
+			legend {
+				font-size: 1rem;
+				color: #aaa;
+				font-family: monospace;
+			}
+
+			.row {
+				display: flex;
+				align-content: start;
+
+				label {
+					&:after {
+						content: ":";
+					}
+
+					width: 6rem;
+					margin: 0 0 10px 0;
+					font-size: 1.3rem;
+				}
+
+				.value {
+					color: #fff;
+					font-size: 1.3rem;
+					font-family: monospace;
+				}
+
+				input {
+					font-size: 1.3rem;
+					width: 300px;
+				}
+			}
+		}
+	}
+}

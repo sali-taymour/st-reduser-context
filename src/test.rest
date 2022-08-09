@@ -1,0 +1,35 @@
+@url = http://localhost:4555
+ 
+### GET ALL ITEMS
+GET {{url}}/germanNouns
+ 
+### ADD ITEM
+POST {{url}}/germanNouns
+content-type: application/json
+ 
+{
+    "article": "nnn",
+    "singular": "nnn",
+    "plural": "nnn"
+}
+ 
+### REPLACE ALL FIELDS IN AN ITEM
+PUT {{url}}/germanNouns/4
+content-type: application/json
+ 
+{
+    "article": "die",
+    "singular": "Bibliothek",
+    "plural": "die Librarys"
+}
+ 
+### REPLACE ONE FIELD IN AN ITEM
+PATCH {{url}}/germanNouns/4
+content-type: application/json
+ 
+{
+    "singular": "Library"
+}
+ 
+### DELETE AN ITEM
+DELETE {{url}}/germanNouns/4
