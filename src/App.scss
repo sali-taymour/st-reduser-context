@@ -76,6 +76,29 @@ body {
 					width: 300px;
 				}
 			}
+
+			.buttonRow {
+				text-align: right;
+				background-color: #4a4a4a;
+				padding: .3rem .3rem .7rem .3rem;
+				display: flex;
+				justify-content: space-between;
+
+				.message {
+					color: #aaa;
+					margin-left: .5rem;
+					margin-top: .2rem;
+					margin-right: 1rem;
+					text-align: left;
+					font-size: 1.3rem;
+				}
+
+				.buttonArea {
+					button {
+						margin-right: .3rem;
+					}
+				}
+			}
 		}
 	}
 }

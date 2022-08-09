@@ -1,9 +1,15 @@
 import { useContext } from "react";
 import { AppContext } from "./AppContext";
+import { GermanNounFormRow } from "./components/GermanNounFormRow";
 import "./App.scss";
 
 function App() {
     const { state, dispatch } = useContext(AppContext);
+
+    // const handleEditButton = (item) => {
+    // 	item.isEditing = !item.isEditing;
+    // 	setGermanNouns([...germanNouns]);
+    // }
 
     return (
         <div className="App">
@@ -25,19 +31,40 @@ function App() {
                         <fieldset className="germanNoun" key={item.id}>
                             <legend>ID: {item.id}</legend>
 
-                            <div className="row">
-                                <label>Article</label>
-                                <div className="value">{item.article}</div>
-                            </div>
+                            <GermanNounFormRow
+                                item={item}
+                                label="Article"
+                                variable="article"
+                            />
 
-                            <div className="row">
-                                <label>Singular</label>
-                                <div className="value">{item.singular}</div>
-                            </div>
+                            <GermanNounFormRow
+                                item={item}
+                                label="Singular"
+                                variable="singular"
+                            />
 
-                            <div className="row">
-                                <label>Plural</label>
-                                <div className="value">{item.plural}</div>
+                            <GermanNounFormRow
+                                item={item}
+                                label="Plural"
+                                variable="plural"
+                            />
+
+                            <div className="buttonRow">
+                                <div className="message">{item.message}</div>
+                                <div className="buttonArea">
+                                    <button
+                                        onClick={() =>
+                                            dispatch({
+                                                type: "toggleEditStatus",
+                                                payload: item,
+                                            })
+                                        }
+                                    >
+                                        Edit
+                                    </button>
+                                    <button>Delete</button>
+                                    <button>Add</button>
+                                </div>
                             </div>
                         </fieldset>
                     );
