@@ -1,8 +1,8 @@
 import { useContext } from "react";
 import { AppContext } from "./AppContext";
-import { GermanNounFormRow } from "./components/GermanNounFormRow";
 import "./App.scss";
-import { ItemButtonArea } from "./components/ItemButtonArea";
+import { ItemAddBox } from "./components/ItemAddBox";
+import { ItemBox } from "./components/ItemBox";
 
 function App() {
     const { state, dispatch } = useContext(AppContext);
@@ -20,40 +20,14 @@ function App() {
                 </button>
             </div>
             <hr />
-            <p>There are {state.germanNouns.length} nouns.</p>
+            <p className="infoMessage">
+                There are {state.germanNouns.length} nouns.
+            </p>
             <div className="germanNounArea">
+                <ItemAddBox />
                 {state.germanNouns.map((item) => {
                     return (
-                        <fieldset className="germanNoun" key={String(item.id)}>
-                            <legend>ID: {item.id}</legend>
-
-                            <GermanNounFormRow
-                                item={item}
-                                label="Article"
-                                variable="article"
-                            />
-
-                            <GermanNounFormRow
-                                item={item}
-                                label="Singular"
-                                variable="singular"
-                            />
-
-                            <GermanNounFormRow
-                                item={item}
-                                label="Plural"
-                                variable="plural"
-                            />
-
-                            <div className="buttonRow">
-                                <div className="message">{item.message}</div>
-
-                                <ItemButtonArea
-                                    dispatch={dispatch}
-                                    item={item}
-                                />
-                            </div>
-                        </fieldset>
+                        <ItemBox key={String(item.id)} item={item}></ItemBox>
                     );
                 })}
             </div>

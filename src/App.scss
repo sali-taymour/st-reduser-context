@@ -5,6 +5,21 @@ body {
 	padding: 1rem;
 	font-size: 1.5rem;
 
+	.App {
+		animation: fadein .5s ease-in; 
+	}
+
+
+	@keyframes fadein {
+		from {
+			opacity: 0;
+		}
+
+		to {
+			opacity: 1;
+		}
+	}
+
 	h1 {
 		font-size: 2.6rem;
 		color: #aaa;
@@ -37,8 +52,15 @@ body {
 
 	.germanNounArea {
 
-		fieldset.germanNoun {
+		fieldset.addItem {
+			background: rgb(90, 107, 90);
+		}
+
+		fieldset.editItem {
 			background-color: #444;
+		}
+
+		fieldset.germanNoun {
 			margin-bottom: 1rem;
 			padding: 1rem;
 			border: 1px solid #666;
@@ -84,6 +106,7 @@ body {
 				padding: .3rem .3rem .7rem .3rem;
 				display: flex;
 				justify-content: space-between;
+				margin-top: 1rem;
 
 				.message {
 					color: #aaa;

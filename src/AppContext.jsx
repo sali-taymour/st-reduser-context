@@ -1,4 +1,4 @@
-import { createContext, useReducer, useEffect } from "react";
+import { createContext, useReducer, useEffect, useRef } from "react";
 import axios from "axios";
 
 const baseUrl = "http://localhost:4555";
@@ -7,7 +7,13 @@ export const AppContext = createContext();
 
 const initialState = {
     count: 0,
-    germanNouns: ["nnn"],
+    germanNouns: [],
+    isAdding: false,
+    addItem: {
+        article: "",
+        singular: "",
+        plural: "",
+    },
 };
 
 function reducer(state, action) {
@@ -58,6 +64,7 @@ function reducer(state, action) {
             item = action.payload.item;
 
             item.isEditing = false;
+            item.isProcessing = false;
             item.message = "";
             break;
         case "handleFailedSave":
@@ -65,11 +72,8 @@ function reducer(state, action) {
             originalItem = item.originalItem;
             message = action.payload.message;
 
-            item.isEditing = false;
+            item.isProcessing = false;
             item.message = message;
-            item.article = originalItem.article;
-            item.singular = originalItem.singular;
-            item.plural = originalItem.plural;
             break;
         case "askIfSureForDelete":
             item = action.payload.item;
@@ -83,6 +87,33 @@ function reducer(state, action) {
                 ...state.germanNouns.filter((m) => m.id !== item.id),
             ];
             break;
+        case "turnOnProcessingStatus":
+            item = action.payload.item;
+
+            item.isProcessing = true;
+            break;
+        case "turnAddingOn":
+            _state.isAdding = true;
+            break;
+        case "clearAddBox":
+            _state.isAdding = false;
+            _state.addItem = {
+                article: "",
+                singular: "",
+                plural: "",
+            };
+            break;
+        case "addItem":
+            item = action.payload.item;
+
+            _state.germanNouns.push(item);
+            _state.isAdding = false;
+            _state.addItem = {
+                article: "",
+                singular: "",
+                plural: "",
+            };
+            break;
     }
     return _state;
 }
@@ -90,15 +121,18 @@ function reducer(state, action) {
 export const AppProvider = ({ children }) => {
     const [state, dispatchCore] = useReducer(reducer, initialState);
 
+    const firstAddInput = useRef(null);
+
     useEffect(() => {
         (async () => {
             const _germanNouns = (await axios.get(`${baseUrl}/germanNouns`))
                 .data;
-            _germanNouns.forEach((noun) => {
-                noun.isEditing = false;
-                noun.isDeleting = false;
-                noun.message = "";
-                noun.originalItem = { ...noun };
+            _germanNouns.forEach((item) => {
+                item.isEditing = false;
+                item.isDeleting = false;
+                item.isProcessing = false;
+                item.message = "";
+                item.originalItem = { ...item };
             });
             dispatchCore({
                 type: "loadGermanNouns",
@@ -120,6 +154,10 @@ export const AppProvider = ({ children }) => {
         }
         switch (action.type) {
             case "saveItem":
+                dispatchCore({
+                    type: "turnOnProcessingStatus",
+                    payload: { item },
+                });
                 try {
                     const response = await axios.put(
                         `${baseUrl}/germanNouns/${item.id}`,
@@ -127,6 +165,69 @@ export const AppProvider = ({ children }) => {
                     );
                     if ([200, 201].includes(response.status)) {
                         dispatchCore(action);
+                    } else {
+                        dispatchCore({
+                            type: "handleFailedSave",
+                            payload: {
+                                item,
+                                message: `API Error: ${response.status}`,
+                            },
+                        });
+                    }
+                } catch (err) {
+                    dispatchCore({
+                        type: "handleFailedSave",
+                        payload: { item, message: `Error: ${err.message}` },
+                    });
+                }
+                break;
+            case "deleteItem":
+                dispatchCore({
+                    type: "turnOnProcessingStatus",
+                    payload: { item },
+                });
+                try {
+                    const response = await axios.delete(
+                        `${baseUrl}/germanNouns/${item.id}`
+                    );
+                    if ([200, 201].includes(response.status)) {
+                        dispatchCore(action);
+                    } else {
+                        dispatchCore({
+                            type: "handleFailedSave",
+                            payload: {
+                                item,
+                                message: `API Error: ${response.status}`,
+                            },
+                        });
+                    }
+                } catch (err) {
+                    dispatchCore({
+                        type: "handleFailedSave",
+                        payload: { item, message: `Error: ${err.message}` },
+                    });
+                }
+                break;
+            case "addItem":
+                const addItem = {
+                    article: item.article,
+                    singular: item.singular,
+                    plural: item.plural,
+                };
+                dispatchCore({
+                    type: "turnOnProcessingStatus",
+                    payload: { item: addItem },
+                });
+                try {
+                    const response = await axios.post(
+                        `${baseUrl}/germanNouns`,
+                        addItem
+                    );
+                    if ([200, 201].includes(response.status)) {
+                        dispatchCore({
+                            type: "addItem",
+                            payload: { item: response.data },
+                        });
                     } else {
                         dispatchCore({
                             type: "handleFailedSave",
@@ -154,6 +255,7 @@ export const AppProvider = ({ children }) => {
             value={{
                 state,
                 dispatch,
+                firstAddInput,
             }}
         >
             {children}
